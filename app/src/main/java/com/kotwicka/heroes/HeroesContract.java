@@ -10,10 +10,13 @@ public interface HeroesContract {
     interface View {
         void updateData(HeroViewModel heroViewModel);
         void hideProgressBar();
+        void hideProgressItem();
+        void showProgressItem();
     }
 
     interface Presenter {
         void loadHeroData();
+        void loadNextPageOfHeroData();
         void unsubscribeHeroData();
     }
 

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     private HeroesAdapter heroesAdapter;
     private List<HeroViewModel> heroes;
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +75,13 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         this.recyclerView.addOnScrollListener(new HeroesOnScrollListener(linearLayoutManager) {
             @Override
             public void loadMoreItems() {
-                showProgressBar();
-                heroesPresenter.loadHeroData();
+                isLoading = true;
+                heroesPresenter.loadNextPageOfHeroData();
             }
 
             @Override
             public boolean isLoading() {
-                return isProgressBarVisible();
+                return isLoading;
             }
         });
     }
@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         super.onStart();
         Log.d(TAG, "Loading data...");
         showProgressBar();
+        loadHeroes();
+    }
+
+    private void loadHeroes() {
         this.heroesPresenter.loadHeroData();
     }
 
@@ -127,8 +131,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     @Override
     public void updateData(HeroViewModel heroViewModel) {
         Log.d(TAG, "Adding new hero : " + heroViewModel.getName());
-        this.heroes.add(heroViewModel);
-        this.heroesAdapter.notifyItemInserted(heroes.size() - 1);
+        this.heroesAdapter.add(heroViewModel);
         Log.d(TAG, "Hero size : " + this.heroesAdapter.getItemCount());
     }
 
@@ -137,11 +140,18 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         this.progressBar.setVisibility(View.GONE);
     }
 
-    private void showProgressBar() {
-        this.progressBar.setVisibility(View.VISIBLE);
+    @Override
+    public void hideProgressItem() {
+        this.heroesAdapter.removeLoadingItem();
+        isLoading = false;
     }
 
-    private boolean isProgressBarVisible() {
-        return this.progressBar.getVisibility() == View.VISIBLE;
+    @Override
+    public void showProgressItem() {
+        this.heroesAdapter.addLoadingItem();
+    }
+
+    private void showProgressBar() {
+        this.progressBar.setVisibility(View.VISIBLE);
     }
 }

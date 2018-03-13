@@ -19,7 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HeroesAdapter extends RecyclerView.Adapter<HeroesAdapter.HeroViewHolder> {
+public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = HeroesAdapter.class.getSimpleName();
 
@@ -32,21 +32,57 @@ public class HeroesAdapter extends RecyclerView.Adapter<HeroesAdapter.HeroViewHo
     }
 
     @Override
-    public HeroViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.hero, parent, false);
-        return new HeroViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        if (viewType == ViewHolderType.HERO.getType()) {
+            viewHolder = new HeroViewHolder(inflater.inflate(R.layout.hero, parent, false));
+        } else {
+            viewHolder = new LoadingViewHolder(inflater.inflate(R.layout.loading, parent, false));
+        }
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(HeroViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Log.d(TAG, "Binding element at position : " + position);
-        final HeroViewModel hero = heroes.get(position);
-        holder.heroName.setText(hero.getName());
-        Log.d(TAG, "Photo path :  " + hero.getPhotoPath());
-        HeroPictureUtil.loadPicture(context, holder.heroImage, hero.getPhotoPath());
+        if (getItemViewType(position) == ViewHolderType.HERO.getType()) {
+            final HeroViewHolder heroViewHolder = (HeroViewHolder) holder;
+            final HeroViewModel hero = heroes.get(position);
+            heroViewHolder.heroName.setText(hero.getName());
+            Log.d(TAG, "Photo path :  " + hero.getPhotoPath());
+            HeroPictureUtil.loadPicture(context, heroViewHolder.heroImage, hero.getPhotoPath());
+        }
     }
 
-    public void clearData(){
+    @Override
+    public int getItemViewType(int position) {
+        return heroes.get(position).getName() == null ? ViewHolderType.LOADING.getType() : ViewHolderType.HERO.getType();
+    }
+
+    public void addLoadingItem() {
+        add(new HeroViewModel());
+    }
+
+    public void removeLoadingItem() {
+        if (hasLoadingStubItem()) {
+            final int stubItemPosition = heroes.size() - 1;
+            heroes.remove(stubItemPosition);
+            notifyItemRemoved(stubItemPosition);
+        }
+    }
+
+    public void add(HeroViewModel heroViewModel) {
+        this.heroes.add(heroViewModel);
+        notifyItemInserted(heroes.size() - 1);
+    }
+
+    private boolean hasLoadingStubItem() {
+        return getItemViewType(heroes.size() - 1) == ViewHolderType.LOADING.getType();
+    }
+
+    public void clearData() {
         this.heroes.clear();
         notifyDataSetChanged();
         HeroApiParameters.resetParameters();
@@ -67,6 +103,13 @@ public class HeroesAdapter extends RecyclerView.Adapter<HeroesAdapter.HeroViewHo
         public HeroViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public static class LoadingViewHolder extends RecyclerView.ViewHolder {
+
+        public LoadingViewHolder(View itemView) {
+            super(itemView);
         }
     }
 }

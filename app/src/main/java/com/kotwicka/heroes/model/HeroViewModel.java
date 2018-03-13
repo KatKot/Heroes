@@ -12,6 +12,13 @@ public class HeroViewModel {
     private final String photoPath;
     private final int total;
 
+    public HeroViewModel() {
+        this.name = null;
+        this.description = null;
+        this.photoPath = null;
+        this.total = 0;
+    }
+
     public HeroViewModel(final Result result, final String total) {
         this.name = result.getName();
         this.description = result.getDescription();

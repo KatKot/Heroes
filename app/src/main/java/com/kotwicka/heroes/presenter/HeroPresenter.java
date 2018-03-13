@@ -5,7 +5,6 @@ import android.util.Log;
 import com.kotwicka.heroes.HeroesContract;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.utils.HeroApiParameters;
-import com.kotwicka.heroes.view.MainActivity;
 
 import rx.Observer;
 import rx.Subscription;
@@ -36,6 +35,7 @@ public class HeroPresenter implements HeroesContract.Presenter {
                     public void onCompleted() {
                         Log.d(TAG, "Completed!");
                         heroView.hideProgressBar();
+                        heroView.showProgressItem();
                     }
 
                     @Override
@@ -46,6 +46,32 @@ public class HeroPresenter implements HeroesContract.Presenter {
                     @Override
                     public void onNext(HeroViewModel heroViewModel) {
                         HeroApiParameters.TOTAL = heroViewModel.getTotal();
+                        heroView.updateData(heroViewModel);
+                        Log.d(TAG, "Updating data with new model...");
+                    }
+                });
+    }
+
+    @Override
+    public void loadNextPageOfHeroData() {
+        subscription = heroModel.heroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<HeroViewModel>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "Completed!");
+                        heroView.showProgressItem();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "Error " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(HeroViewModel heroViewModel) {
+                        heroView.hideProgressItem();
                         heroView.updateData(heroViewModel);
                         Log.d(TAG, "Updating data with new model...");
                     }

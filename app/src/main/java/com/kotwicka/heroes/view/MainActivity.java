@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         ButterKnife.bind(this);
         HeroesApp.get().plusHeroesComponent(this).inject(this);
         initiateData();
+        showProgressBar();
+        loadHeroes();
     }
 
     private void initiateData() {
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             @Override
             public void onHeroClick(HeroViewModel hero) {
                 final Intent intent = new Intent(MainActivity.this, HeroDetailActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra(getString(R.string.hero_extra), hero);
                 startActivity(intent);
             }
@@ -84,14 +87,15 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         this.searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     heroesAdapter.clearData();
                     progressBar.setVisibility(View.VISIBLE);
                     hideSoftKeyboard();
                     searchEditText.setVisibility(View.GONE);
                     floatingActionButton.setVisibility(View.VISIBLE);
                     HeroApiParameters.NAME = v.getText().toString();
-                    heroesPresenter.loadHeroData();;
+                    heroesPresenter.loadHeroData();
+                    ;
                     return true;
                 }
                 return false;
@@ -126,9 +130,6 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "Loading data...");
-        showProgressBar();
-        loadHeroes();
     }
 
     private void loadHeroes() {
@@ -138,6 +139,11 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         this.heroesPresenter.unsubscribeHeroData();
         this.heroesAdapter.clearData();
         HeroesApp.get().clearHeroesComponent();
@@ -158,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             this.heroesPresenter.loadHeroData();
             return true;
         }
-        if(id == R.id.action_favourites) {
+        if (id == R.id.action_favourites) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -196,11 +202,12 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     private void hideSoftKeyboard() {
         View focusedView = getCurrentFocus();
-        if(focusedView != null) {
+        if (focusedView != null) {
             InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         }
     }
+
     private void showProgressBar() {
         this.progressBar.setVisibility(View.VISIBLE);
     }
@@ -209,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if(v.getId() == R.id.search_et && !hasFocus) {
+            if (v.getId() == R.id.search_et && !hasFocus) {
                 hideSoftKeyboard();
             }
         }

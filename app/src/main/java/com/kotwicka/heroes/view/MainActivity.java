@@ -1,5 +1,6 @@
 package com.kotwicka.heroes.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -71,7 +72,14 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     private void initiateData() {
         this.heroes = new ArrayList<>();
-        this.heroesAdapter = new HeroesAdapter(this, heroes);
+        this.heroesAdapter = new HeroesAdapter(this, heroes, new HeroesAdapter.OnHeroClickListener() {
+            @Override
+            public void onHeroClick(HeroViewModel hero) {
+                final Intent intent = new Intent(MainActivity.this, HeroDetailActivity.class);
+                intent.putExtra(getString(R.string.hero_extra), hero);
+                startActivity(intent);
+            }
+        });
         this.searchEditText.setOnFocusChangeListener(new InputFocusListener());
         this.searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

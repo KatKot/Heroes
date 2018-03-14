@@ -21,14 +21,20 @@ import butterknife.ButterKnife;
 
 public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public interface OnHeroClickListener {
+        void onHeroClick(HeroViewModel hero);
+    }
+
     private static final String TAG = HeroesAdapter.class.getSimpleName();
 
     private final List<HeroViewModel> heroes;
     private final Context context;
+    private final OnHeroClickListener listener;
 
-    public HeroesAdapter(final Context context, final List<HeroViewModel> heroes) {
+    public HeroesAdapter(final Context context, final List<HeroViewModel> heroes, final OnHeroClickListener listener) {
         this.heroes = heroes;
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -49,10 +55,7 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         Log.d(TAG, "Binding element at position : " + position);
         if (getItemViewType(position) == ViewHolderType.HERO.getType()) {
             final HeroViewHolder heroViewHolder = (HeroViewHolder) holder;
-            final HeroViewModel hero = heroes.get(position);
-            heroViewHolder.heroName.setText(hero.getName());
-            Log.d(TAG, "Photo path :  " + hero.getPhotoPath());
-            HeroPictureUtil.loadPicture(context, heroViewHolder.heroImage, hero.getPhotoPath());
+            heroViewHolder.bind(context, listener, heroes.get(position));
         }
     }
 
@@ -103,6 +106,18 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public HeroViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(final Context context,  final OnHeroClickListener listener, final HeroViewModel heroViewModel) {
+            heroName.setText(heroViewModel.getName());
+            Log.d(TAG, "Photo path :  " + heroViewModel.getPhotoPath());
+            HeroPictureUtil.loadPicture(context, heroImage, heroViewModel.getPhotoPath());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onHeroClick(heroViewModel);
+                }
+            });
         }
     }
 

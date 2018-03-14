@@ -3,4 +3,6 @@
     <string name="action_home_view">Home view</string>
     <string name="action_favourite">Favourite</string>
     <string name="search_hint">Type hero name...</string>
+    <string name="title_activity_hero_detail">HeroDetailActivity</string>
+    <string name="hero_extra">hero_extra</string>
 </resources>

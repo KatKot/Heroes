@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.kotwicka.heroes.view.HeroDetailActivity"
+    tools:showIn="@layout/activity_hero_detail">
+
+    <ImageView
+        android:id="@+id/hero_detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:id="@+id/hero_detail_description"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="left"
+        android:gravity="left"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+
+
+</LinearLayout>

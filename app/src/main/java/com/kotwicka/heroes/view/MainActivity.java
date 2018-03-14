@@ -72,17 +72,14 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     private void initiateData() {
         this.heroes = new ArrayList<>();
         this.heroesAdapter = new HeroesAdapter(this, heroes);
+        this.searchEditText.setOnFocusChangeListener(new InputFocusListener());
         this.searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH) {
                     heroesAdapter.clearData();
                     progressBar.setVisibility(View.VISIBLE);
-                    View focusedView = MainActivity.this.getCurrentFocus();
-                    if(focusedView != null) {
-                        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                        manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-                    }
+                    hideSoftKeyboard();
                     searchEditText.setVisibility(View.GONE);
                     floatingActionButton.setVisibility(View.VISIBLE);
                     HeroApiParameters.NAME = v.getText().toString();
@@ -112,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
                 if (searchEditText.getVisibility() == View.VISIBLE) {
                     searchEditText.setVisibility(View.GONE);
                     floatingActionButton.setVisibility(View.VISIBLE);
+                    hideSoftKeyboard();
                 }
             }
         });
@@ -188,7 +186,24 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         searchEditText.setVisibility(View.VISIBLE);
     }
 
+    private void hideSoftKeyboard() {
+        View focusedView = getCurrentFocus();
+        if(focusedView != null) {
+            InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }
+    }
     private void showProgressBar() {
         this.progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private class InputFocusListener implements View.OnFocusChangeListener {
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(v.getId() == R.id.search_et && !hasFocus) {
+                hideSoftKeyboard();
+            }
+        }
     }
 }

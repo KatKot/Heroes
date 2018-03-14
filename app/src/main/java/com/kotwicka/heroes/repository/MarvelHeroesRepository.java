@@ -29,4 +29,15 @@ public class MarvelHeroesRepository implements HeroesRepository {
             }
         });
     }
+
+    @Override
+    public Observable<Data> getHeroesWithName(final String name, final int limit, final int offset) {
+        Log.d(TAG, "Getting heroes for name : " + name + " ...");
+        return marvelService.getHeroesWithNameStartingWith(name, limit, offset).map(new Func1<Heroes, Data>() {
+            @Override
+            public Data call(Heroes heroes) {
+                return heroes.getData();
+            }
+        });
+    }
 }

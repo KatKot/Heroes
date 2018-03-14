@@ -28,11 +28,27 @@ public class HeroModel implements HeroesContract.Model {
     @Override
     public Observable<HeroViewModel> heroes(final int limit, final int offset) {
         Log.d(TAG, "Mapping heroes to view model...");
-        final Observable<Data> data = repository.getHeroes(limit, offset);
         return repository.getHeroes(limit, offset).concatMap(new Func1<Data, Observable<? extends HeroViewModel>>() {
             @Override
             public Observable<? extends HeroViewModel> call(final Data data) {
                 Log.d(TAG, "Count: " + data.getCount() + " , Total : " + data.getTotal()
+                        + " , Offset: " + data.getOffset() + " , Limit: " + data.getLimit());
+                return Observable.from(data.getResults()).map(new Func1<Result, HeroViewModel>() {
+                    @Override
+                    public HeroViewModel call(Result result) {
+                        return new HeroViewModel(result, data.getTotal());
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public Observable<HeroViewModel> heroesWithName(final String name, final int limit, final int offset) {
+        return repository.getHeroesWithName(name, limit, offset).concatMap(new Func1<Data, Observable<? extends HeroViewModel>>() {
+            @Override
+            public Observable<? extends HeroViewModel> call(final Data data) {
+                Log.d(TAG, "Name : " + name + " Count: " + data.getCount() + " , Total : " + data.getTotal()
                         + " , Offset: " + data.getOffset() + " , Limit: " + data.getLimit());
                 return Observable.from(data.getResults()).map(new Func1<Result, HeroViewModel>() {
                     @Override

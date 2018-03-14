@@ -6,6 +6,7 @@ import com.kotwicka.heroes.HeroesContract;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.utils.HeroApiParameters;
 
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,7 +28,7 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
     @Override
     public void loadHeroData() {
-        subscription = heroModel.heroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET)
+        subscription = getHeroes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HeroViewModel>() {
@@ -54,7 +55,7 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
     @Override
     public void loadNextPageOfHeroData() {
-        subscription = heroModel.heroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET)
+        subscription = getHeroes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HeroViewModel>() {
@@ -76,6 +77,14 @@ public class HeroPresenter implements HeroesContract.Presenter {
                         Log.d(TAG, "Updating data with new model...");
                     }
                 });
+    }
+
+    private Observable<HeroViewModel> getHeroes() {
+        if (HeroApiParameters.NAME.isEmpty()) {
+            return heroModel.heroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
+        } else {
+            return heroModel.heroesWithName(HeroApiParameters.NAME, HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
+        }
     }
 
     @Override

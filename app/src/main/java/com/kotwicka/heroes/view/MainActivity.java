@@ -8,10 +8,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.kotwicka.heroes.HeroesContract;
 import com.kotwicka.heroes.R;
@@ -39,6 +44,12 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     @BindView(R.id.heroes_progress_bar)
     ProgressBar progressBar;
 
+    @BindView(R.id.fab)
+    FloatingActionButton floatingActionButton;
+
+    @BindView(R.id.search_et)
+    EditText searchEditText;
+
     @Inject
     HeroesContract.Presenter heroesPresenter;
 
@@ -56,20 +67,31 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         ButterKnife.bind(this);
         HeroesApp.get().plusHeroesComponent(this).inject(this);
         initiateData();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     private void initiateData() {
         this.heroes = new ArrayList<>();
         this.heroesAdapter = new HeroesAdapter(this, heroes);
+        this.searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    heroesAdapter.clearData();
+                    progressBar.setVisibility(View.VISIBLE);
+                    View focusedView = MainActivity.this.getCurrentFocus();
+                    if(focusedView != null) {
+                        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                        manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+                    }
+                    searchEditText.setVisibility(View.GONE);
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                    HeroApiParameters.NAME = v.getText().toString();
+                    heroesPresenter.loadHeroData();;
+                    return true;
+                }
+                return false;
+            }
+        });
         this.recyclerView.setAdapter(heroesAdapter);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(linearLayoutManager);
@@ -83,6 +105,14 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             @Override
             public boolean isLoading() {
                 return isLoading;
+            }
+
+            @Override
+            public void hideSearchBar() {
+                if (searchEditText.getVisibility() == View.VISIBLE) {
+                    searchEditText.setVisibility(View.GONE);
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -109,23 +139,22 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_home_view) {
+            this.heroesAdapter.clearData();
+            showProgressBar();
+            this.heroesPresenter.loadHeroData();
             return true;
         }
-
+        if(id == R.id.action_favourites) {
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -152,6 +181,11 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         if (!HeroApiParameters.isLastPage()) {
             this.heroesAdapter.addLoadingItem();
         }
+    }
+
+    public void showSearchBar(View view) {
+        floatingActionButton.setVisibility(View.GONE);
+        searchEditText.setVisibility(View.VISIBLE);
     }
 
     private void showProgressBar() {

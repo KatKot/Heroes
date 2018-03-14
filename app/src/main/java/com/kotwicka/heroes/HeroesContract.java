@@ -22,5 +22,6 @@ public interface HeroesContract {
 
     interface Model {
         Observable<HeroViewModel> heroes(int limit, int offset);
+        Observable<HeroViewModel> heroesWithName(String name, int limit, int offset);
     }
 }

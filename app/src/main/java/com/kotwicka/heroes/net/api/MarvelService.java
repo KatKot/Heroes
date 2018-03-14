@@ -12,4 +12,7 @@ public interface MarvelService {
     @GET("/v1/public/characters")
     Observable<Heroes> getHeroes(@Query("limit") int limit, @Query("offset") int offset);
 
+    @GET("/v1/public/characters")
+    Observable<Heroes> getHeroesWithNameStartingWith(@Query("nameStartsWith") String name, @Query("limit") int limit, @Query("offset") int offset );
+
 }

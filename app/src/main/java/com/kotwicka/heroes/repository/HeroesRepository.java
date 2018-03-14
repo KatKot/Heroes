@@ -10,4 +10,6 @@ import rx.Observable;
 public interface HeroesRepository {
 
     Observable<Data> getHeroes(int limit, int offset);
+
+    Observable<Data> getHeroesWithName(String name, int limit, int offset);
 }

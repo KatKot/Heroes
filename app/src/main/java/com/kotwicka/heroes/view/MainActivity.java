@@ -19,6 +19,7 @@ import com.kotwicka.heroes.adapter.HeroesAdapter;
 import com.kotwicka.heroes.adapter.HeroesOnScrollListener;
 import com.kotwicka.heroes.app.HeroesApp;
 import com.kotwicka.heroes.model.HeroViewModel;
+import com.kotwicka.heroes.utils.HeroApiParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     @Override
     public void showProgressItem() {
-        this.heroesAdapter.addLoadingItem();
+        if (!HeroApiParameters.isLastPage()) {
+            this.heroesAdapter.addLoadingItem();
+        }
     }
 
     private void showProgressBar() {

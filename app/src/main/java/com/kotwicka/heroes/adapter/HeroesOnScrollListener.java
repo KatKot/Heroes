@@ -13,6 +13,10 @@ public abstract class HeroesOnScrollListener extends RecyclerView.OnScrollListen
         this.layoutManager = layoutManager;
     }
 
+    public abstract void loadMoreItems();
+
+    public abstract boolean isLoading();
+
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
@@ -30,12 +34,8 @@ public abstract class HeroesOnScrollListener extends RecyclerView.OnScrollListen
         }
     }
 
-    public abstract void loadMoreItems();
-
-    public abstract boolean isLoading();
-
     private boolean isLastPage() {
-        return HeroApiParameters.TOTAL - HeroApiParameters.OFFSET - HeroApiParameters.LIMIT <= 0;
+        return HeroApiParameters.isLastPage();
     }
 }
 

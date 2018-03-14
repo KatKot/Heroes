@@ -18,4 +18,8 @@ public final class HeroApiParameters {
         OFFSET = 0;
         TOTAL = 0;
     }
+
+    public static boolean isLastPage() {
+        return HeroApiParameters.TOTAL - HeroApiParameters.OFFSET - HeroApiParameters.LIMIT <= 0;
+    }
 }

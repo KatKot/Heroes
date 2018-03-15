@@ -5,6 +5,7 @@ import android.util.Log;
 import com.kotwicka.heroes.net.api.MarvelService;
 import com.kotwicka.heroes.net.model.Data;
 import com.kotwicka.heroes.net.model.Heroes;
+import com.kotwicka.heroes.persistence.database.HeroDatabase;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -13,10 +14,12 @@ public class MarvelHeroesRepository implements HeroesRepository {
 
     private static final String TAG = MarvelHeroesRepository.class.getName();
 
-    private MarvelService marvelService;
+    private final MarvelService marvelService;
+    private final HeroDatabase heroDatabase;
 
-    public MarvelHeroesRepository(final MarvelService marvelService) {
+    public MarvelHeroesRepository(final MarvelService marvelService, final HeroDatabase heroDatabase) {
         this.marvelService = marvelService;
+        this.heroDatabase = heroDatabase;
     }
 
     @Override

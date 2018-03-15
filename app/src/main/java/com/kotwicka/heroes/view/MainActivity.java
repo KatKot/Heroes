@@ -3,16 +3,15 @@ package com.kotwicka.heroes.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
                     progressBar.setVisibility(View.VISIBLE);
                     hideSoftKeyboard();
                     searchEditText.setVisibility(View.GONE);
-                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.show();
                     HeroApiParameters.NAME = v.getText().toString();
                     heroesPresenter.loadHeroData();
                     ;
@@ -120,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             public void hideSearchBar() {
                 if (searchEditText.getVisibility() == View.VISIBLE) {
                     searchEditText.setVisibility(View.GONE);
-                    floatingActionButton.setVisibility(View.VISIBLE);
+                    floatingActionButton.show();
                     hideSoftKeyboard();
                 }
             }
@@ -196,8 +195,10 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     }
 
     public void showSearchBar(View view) {
-        floatingActionButton.setVisibility(View.GONE);
+        floatingActionButton.hide();
         searchEditText.setVisibility(View.VISIBLE);
+        searchEditText.requestFocus();
+        showSoftKeyboard();
     }
 
     private void hideSoftKeyboard() {
@@ -205,6 +206,14 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         if (focusedView != null) {
             InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }
+    }
+
+    private void showSoftKeyboard() {
+        View focusedView = getCurrentFocus();
+        if (focusedView != null) {
+            InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            manager.showSoftInput(focusedView, 0);
         }
     }
 

@@ -110,7 +110,6 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public void bind(final Context context,  final OnHeroClickListener listener, final HeroViewModel heroViewModel) {
             heroName.setText(heroViewModel.getName());
-            Log.d(TAG, "Photo path :  " + heroViewModel.getPhotoPath());
             HeroPictureUtil.loadPicture(context, heroImage, heroViewModel.getPhotoPath());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

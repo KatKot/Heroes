@@ -12,14 +12,15 @@ public final class HeroPictureUtil {
 
     private static final String TAG = HeroPictureUtil.class.getSimpleName();
     private static final String IMAGE_NOT_FOUND = "image_not_available";
+    private static final String IMAGE_NOT_FOUND_2 = "4c002e0305708.gif";
 
     private HeroPictureUtil() {
 
     }
 
     public static void loadPicture(final Context context, final ImageView imageView, final String photoPath) {
-        if (photoPath.contains(IMAGE_NOT_FOUND)) {
-            imageView.setImageDrawable(context.getDrawable(R.drawable.blank_avatar_2));
+        if (photoPath.contains(IMAGE_NOT_FOUND) || photoPath.contains(IMAGE_NOT_FOUND_2)) {
+            imageView.setImageDrawable(context.getDrawable(R.drawable.blank_avatar));
         } else {
             Picasso.with(context)
                     .load(photoPath)

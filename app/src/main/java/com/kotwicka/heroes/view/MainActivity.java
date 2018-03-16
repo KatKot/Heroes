@@ -56,12 +56,13 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     private HeroesAdapter heroesAdapter;
     private List<HeroViewModel> heroes;
     private boolean isLoading = false;
+    private int scrollPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
@@ -128,18 +129,13 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "On resume");
-        if(HeroApiParameters.GET_FAVOURITES) {
+        if (HeroApiParameters.GET_FAVOURITES) {
             Log.d(TAG, "Reloading heroes from db");
             showProgressBar();
             this.heroesAdapter.clearData();
             HeroApiParameters.GET_FAVOURITES = true;
             this.heroesPresenter.loadHeroData();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     private void loadHeroes() {
@@ -149,8 +145,10 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
+        scrollPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        Log.d(TAG, "Saved scroll position: " + scrollPosition);
     }
 
     @Override
@@ -195,6 +193,9 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     @Override
     public void hideProgressBar() {
         this.progressBar.setVisibility(View.GONE);
+        this.recyclerView.getLayoutManager().scrollToPosition(scrollPosition);
+        Log.d(TAG, "Scrolled to position: " + scrollPosition);
+        this.scrollPosition = 0;
     }
 
     @Override
@@ -221,7 +222,9 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         View focusedView = getCurrentFocus();
         if (focusedView != null) {
             InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+            if (manager != null) {
+                manager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+            }
         }
     }
 
@@ -229,7 +232,9 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         View focusedView = getCurrentFocus();
         if (focusedView != null) {
             InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            manager.showSoftInput(focusedView, 0);
+            if (manager != null) {
+                manager.showSoftInput(focusedView, 0);
+            }
         }
     }
 

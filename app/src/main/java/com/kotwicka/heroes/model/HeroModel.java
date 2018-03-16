@@ -65,6 +65,21 @@ public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model
     }
 
     @Override
+    public Observable<HeroViewModel> favouriteHeroes(final int limit, final int offset) {
+        return repository.getFavouriteHeroes(limit, offset).concatMap(new Func1<FavouriteHeroes, Observable<? extends HeroViewModel>>() {
+            @Override
+            public Observable<? extends HeroViewModel> call(final FavouriteHeroes favouriteHeroes) {
+                return Observable.from(favouriteHeroes.getFavouriteHeroesPage()).map(new Func1<Hero, HeroViewModel>() {
+                    @Override
+                    public HeroViewModel call(Hero hero) {
+                        return new HeroViewModel(hero, favouriteHeroes.getTotalSize());
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public Completable addToFavourites(final HeroViewModel heroViewModel) {
         return repository.addHeroToFavourites(heroViewModel);
     }

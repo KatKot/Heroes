@@ -1,5 +1,6 @@
 package com.kotwicka.heroes.repository;
 
+import com.kotwicka.heroes.model.FavouriteHeroes;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.net.model.Data;
 import com.kotwicka.heroes.persistence.entity.Hero;
@@ -13,6 +14,8 @@ public interface HeroesRepository {
     Observable<Data> getHeroes(int limit, int offset);
 
     Observable<Data> getHeroesWithName(String name, int limit, int offset);
+
+    Observable<FavouriteHeroes> getFavouriteHeroes(final int limit, final int offset);
 
     Single<Hero> getFavourite(HeroViewModel hero);
 

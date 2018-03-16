@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
         ButterKnife.bind(this);
         HeroesApp.get().plusHeroesComponent(this).inject(this);
         initiateData();
-        showProgressBar();
         loadHeroes();
     }
 
@@ -94,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
                     floatingActionButton.show();
                     HeroApiParameters.NAME = v.getText().toString();
                     heroesPresenter.loadHeroData();
-                    ;
                     return true;
                 }
                 return false;
@@ -127,11 +125,26 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "On resume");
+        if(HeroApiParameters.GET_FAVOURITES) {
+            Log.d(TAG, "Reloading heroes from db");
+            showProgressBar();
+            this.heroesAdapter.clearData();
+            HeroApiParameters.GET_FAVOURITES = true;
+            this.heroesPresenter.loadHeroData();
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
     }
 
     private void loadHeroes() {
+        showProgressBar();
+        this.heroesAdapter.clearData();
         this.heroesPresenter.loadHeroData();
     }
 
@@ -144,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
     protected void onDestroy() {
         super.onDestroy();
         this.heroesPresenter.unsubscribeHeroData();
-        this.heroesAdapter.clearData();
+        HeroApiParameters.resetOffset();
         HeroesApp.get().clearHeroesComponent();
     }
 
@@ -164,7 +177,10 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             return true;
         }
         if (id == R.id.action_favourites) {
-            return true;
+            this.heroesAdapter.clearData();
+            HeroApiParameters.GET_FAVOURITES = true;
+            showProgressBar();
+            this.heroesPresenter.loadHeroData();
         }
         return super.onOptionsItemSelected(item);
     }

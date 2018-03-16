@@ -6,6 +6,7 @@ public final class HeroApiParameters {
     public static int TOTAL = 0;
     public static int OFFSET = 0;
     public static String NAME = "";
+    public static boolean GET_FAVOURITES = false;
 
     private HeroApiParameters() {
 
@@ -19,6 +20,11 @@ public final class HeroApiParameters {
         OFFSET = 0;
         TOTAL = 0;
         NAME = "";
+        GET_FAVOURITES = false;
+    }
+
+    public static void resetOffset() {
+        OFFSET = 0;
     }
 
     public static boolean isLastPage() {

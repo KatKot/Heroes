@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.kotwicka.heroes.net.model.Result;
+import com.kotwicka.heroes.persistence.entity.Hero;
 
 public class HeroViewModel implements Parcelable {
 
@@ -27,6 +28,13 @@ public class HeroViewModel implements Parcelable {
         this.description = result.getDescription();
         this.photoPath = result.getThumbnail().getPath() + PHOTO_EXTENSION_PREFIX + result.getThumbnail().getExtension();
         this.total = Integer.valueOf(total);
+    }
+
+    public HeroViewModel(final Hero hero, final int total) {
+        this.name = hero.getName();
+        this.description = hero.getDescription();
+        this.photoPath = hero.getPhotoPath();
+        this.total = total;
     }
 
     protected HeroViewModel(Parcel in) {

@@ -80,7 +80,9 @@ public class HeroPresenter implements HeroesContract.Presenter {
     }
 
     private Observable<HeroViewModel> getHeroes() {
-        if (HeroApiParameters.NAME.isEmpty()) {
+        if (HeroApiParameters.GET_FAVOURITES) {
+            return heroModel.favouriteHeroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
+        } else if (HeroApiParameters.NAME.isEmpty()) {
             return heroModel.heroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
         } else {
             return heroModel.heroesWithName(HeroApiParameters.NAME, HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);

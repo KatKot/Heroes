@@ -2,12 +2,19 @@ package com.kotwicka.heroes.repository;
 
 import android.util.Log;
 
+import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.net.api.MarvelService;
 import com.kotwicka.heroes.net.model.Data;
 import com.kotwicka.heroes.net.model.Heroes;
 import com.kotwicka.heroes.persistence.database.HeroDatabase;
+import com.kotwicka.heroes.persistence.entity.Hero;
 
+import java.util.concurrent.Callable;
+
+import rx.Completable;
 import rx.Observable;
+import rx.Single;
+import rx.functions.Action0;
 import rx.functions.Func1;
 
 public class MarvelHeroesRepository implements HeroesRepository {
@@ -25,18 +32,52 @@ public class MarvelHeroesRepository implements HeroesRepository {
     @Override
     public Observable<Data> getHeroes(final int limit, final int offset) {
         Log.d(TAG, "Getting heroes from net...");
-        return marvelService.getHeroes(limit, offset).map(new Func1<Heroes, Data>() {
-            @Override
-            public Data call(Heroes heroes) {
-                return heroes.getData();
-            }
-        });
+        return mapHeroes(marvelService.getHeroes(limit, offset));
     }
 
     @Override
     public Observable<Data> getHeroesWithName(final String name, final int limit, final int offset) {
         Log.d(TAG, "Getting heroes for name : " + name + " ...");
-        return marvelService.getHeroesWithNameStartingWith(name, limit, offset).map(new Func1<Heroes, Data>() {
+        return mapHeroes(marvelService.getHeroesWithNameStartingWith(name, limit, offset));
+    }
+
+    @Override
+    public Single<Hero> getFavourite(final HeroViewModel hero) {
+        return Single.fromCallable(new Callable<Hero>() {
+            @Override
+            public Hero call() throws Exception {
+                return heroDatabase.heroDao().getForName(hero.getName());
+            }
+        });
+    }
+
+    @Override
+    public Completable addHeroToFavourites(final HeroViewModel hero) {
+        final Hero favouriteHero = new Hero();
+        favouriteHero.setName(hero.getName());
+        favouriteHero.setDescription(hero.getDescription());
+        favouriteHero.setPhotoPath(hero.getPhotoPath());
+
+        return Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                heroDatabase.heroDao().insert(favouriteHero);
+            }
+        });
+    }
+
+    @Override
+    public Completable removeHeroFromFavourites(final Hero favouriteHero) {
+        return Completable.fromAction(new Action0() {
+            @Override
+            public void call() {
+                heroDatabase.heroDao().delete(favouriteHero);
+            }
+        });
+    }
+
+    private Observable<Data> mapHeroes(final Observable<Heroes> heroes) {
+        return heroes.map(new Func1<Heroes, Data>() {
             @Override
             public Data call(Heroes heroes) {
                 return heroes.getData();

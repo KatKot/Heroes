@@ -3,19 +3,23 @@ package com.kotwicka.heroes.model;
 import android.util.Log;
 
 import com.kotwicka.heroes.HeroesContract;
+import com.kotwicka.heroes.contract.HeroDetailContract;
 import com.kotwicka.heroes.net.model.Data;
 import com.kotwicka.heroes.net.model.Heroes;
 import com.kotwicka.heroes.net.model.Result;
+import com.kotwicka.heroes.persistence.entity.Hero;
 import com.kotwicka.heroes.presenter.HeroPresenter;
 import com.kotwicka.heroes.repository.HeroesRepository;
 import com.kotwicka.heroes.utils.HeroApiParameters;
 
 import java.util.Date;
 
+import rx.Completable;
 import rx.Observable;
+import rx.Single;
 import rx.functions.Func1;
 
-public class HeroModel implements HeroesContract.Model {
+public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model {
 
     private static final String TAG = HeroModel.class.getName();
 
@@ -58,5 +62,20 @@ public class HeroModel implements HeroesContract.Model {
                 });
             }
         });
+    }
+
+    @Override
+    public Completable addToFavourites(final HeroViewModel heroViewModel) {
+        return repository.addHeroToFavourites(heroViewModel);
+    }
+
+    @Override
+    public Completable removeFromFavourites(final Hero hero) {
+        return repository.removeHeroFromFavourites(hero);
+    }
+
+    @Override
+    public Single<Hero> getFavourite(final HeroViewModel heroViewModel) {
+        return repository.getFavourite(heroViewModel);
     }
 }

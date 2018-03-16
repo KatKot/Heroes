@@ -3,11 +3,12 @@ package com.kotwicka.heroes.persistence.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity
 public class Hero {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo
@@ -18,17 +19,6 @@ public class Hero {
 
     @ColumnInfo(name = "photo_path")
     private String photoPath;
-
-    @ColumnInfo(name = "is_favourite")
-    private boolean isFavourite;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -54,11 +44,11 @@ public class Hero {
         this.photoPath = photoPath;
     }
 
-    public boolean isFavourite() {
-        return isFavourite;
+    public int getId() {
+        return id;
     }
 
-    public void setFavourite(boolean favourite) {
-        isFavourite = favourite;
+    public void setId(int id) {
+        this.id = id;
     }
 }

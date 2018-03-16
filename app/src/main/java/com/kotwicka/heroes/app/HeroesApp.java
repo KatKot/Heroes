@@ -4,8 +4,10 @@ import android.app.Application;
 
 import com.kotwicka.heroes.HeroesComponent;
 import com.kotwicka.heroes.HeroesContract;
+import com.kotwicka.heroes.HeroesDetailComponent;
+import com.kotwicka.heroes.HeroesDetailModule;
 import com.kotwicka.heroes.HeroesModule;
-import com.kotwicka.heroes.net.module.MarvelServiceModule;
+import com.kotwicka.heroes.contract.HeroDetailContract;
 
 public class HeroesApp extends Application {
 
@@ -13,6 +15,7 @@ public class HeroesApp extends Application {
 
     private ApplicationComponent applicationComponent;
     private HeroesComponent heroesComponent;
+    private HeroesDetailComponent heroesDetailComponent;
 
     @Override
     public void onCreate() {
@@ -32,6 +35,17 @@ public class HeroesApp extends Application {
             heroesComponent = applicationComponent.plusHeroesComponent(new HeroesModule(heroesContract));
        }
        return heroesComponent;
+    }
+
+    public HeroesDetailComponent plusHeroesDetailComponent(final HeroDetailContract.View view) {
+        if(heroesDetailComponent == null) {
+            heroesDetailComponent = applicationComponent.plusHeroesDetailComponent(new HeroesDetailModule(view));
+        }
+        return heroesDetailComponent;
+    }
+
+    public void clearHeroesDetailComponent() {
+        this.heroesDetailComponent = null;
     }
 
     public void clearHeroesComponent() {

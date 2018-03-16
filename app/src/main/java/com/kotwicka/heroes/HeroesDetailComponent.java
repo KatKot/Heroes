@@ -3,11 +3,10 @@ package com.kotwicka.heroes;
 import com.kotwicka.heroes.view.HeroDetailActivity;
 import com.kotwicka.heroes.view.MainActivity;
 
-import dagger.Component;
 import dagger.Subcomponent;
 
-@Subcomponent(modules = HeroesModule.class)
-public interface HeroesComponent {
+@Subcomponent(modules = HeroesDetailModule.class)
+public interface HeroesDetailComponent {
 
-    void inject(MainActivity mainActivity);
+    void inject(HeroDetailActivity heroDetailActivity);
 }

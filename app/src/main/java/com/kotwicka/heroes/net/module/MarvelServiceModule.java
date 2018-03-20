@@ -1,5 +1,8 @@
 package com.kotwicka.heroes.net.module;
 
+import android.content.Context;
+
+import com.kotwicka.heroes.R;
 import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.net.api.MarvelService;
 import com.kotwicka.heroes.persistence.database.HeroDatabase;
@@ -31,8 +34,6 @@ public class MarvelServiceModule {
     private static final String API_PARAMETER_KEY = "apikey";
     private static final String TIMESTAMP_PARAMETER_KEY = "ts";
     private static final String HASH_PARAMETER_KEY = "hash";
-    private static final String API_KEY_VALUE = "d8c01c8c7c0ce28dad420f1cbfb5d2bb";
-    private static final String PRIVATE_API_KEY_VALUE = "dummyData";
 
 
     @Provides
@@ -49,16 +50,16 @@ public class MarvelServiceModule {
 
     @Provides
     @Singleton
-    public Interceptor providesInterceptor() {
+    public Interceptor providesInterceptor(final Context context) {
         return new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 String timestamp = String.valueOf(new Date().getTime());
-                String baseForHash = timestamp + PRIVATE_API_KEY_VALUE + API_KEY_VALUE;
+                String baseForHash = timestamp + context.getString(R.string.marvel_api_private_key) + context.getString(R.string.marvel_api_key);
                 String hashValue = new String(Hex.encodeHex(DigestUtils.md5(baseForHash)));
                 HttpUrl url = chain.request().url().newBuilder()
                         .addQueryParameter(TIMESTAMP_PARAMETER_KEY, timestamp)
-                        .addQueryParameter(API_PARAMETER_KEY, API_KEY_VALUE)
+                        .addQueryParameter(API_PARAMETER_KEY, context.getString(R.string.marvel_api_key))
                         .addQueryParameter(HASH_PARAMETER_KEY, hashValue)
                         .build();
                 return chain.proceed(chain.request().newBuilder()

@@ -9,12 +9,21 @@
     tools:context="com.kotwicka.heroes.list.view.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <android.support.v7.widget.RecyclerView
+    <com.kotwicka.heroes.list.view.EmptyRecyclerView
         android:id="@+id/hero_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/hero_empty_list_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/no_heroes"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/search_et"

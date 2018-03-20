@@ -6,4 +6,5 @@
     <string name="search_hint">Type hero name...</string>
     <string name="title_activity_hero_detail">HeroDetailActivity</string>
     <string name="hero_extra">hero_extra</string>
+    <string name="no_heroes">No heroes</string>
 </resources>

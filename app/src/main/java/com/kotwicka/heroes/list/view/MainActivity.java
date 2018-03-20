@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements HeroesContract.View {
 
     @BindView(R.id.hero_recycler_view)
-    RecyclerView recyclerView;
+    EmptyRecyclerView recyclerView;
 
     @BindView(R.id.heroes_progress_bar)
     ProgressBar progressBar;
@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     @BindView(R.id.search_et)
     EditText searchEditText;
+
+    @BindView(R.id.hero_empty_list_tv)
+    TextView emptyListTextView;
 
     Toolbar toolbar;
 
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             }
         });
         this.recyclerView.setAdapter(heroesAdapter);
+        this.recyclerView.setEmptyView(emptyListTextView);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(linearLayoutManager);
         this.recyclerView.addOnScrollListener(new HeroesOnScrollListener(linearLayoutManager, heroApiModel) {

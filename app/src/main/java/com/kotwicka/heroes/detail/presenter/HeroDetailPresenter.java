@@ -1,8 +1,6 @@
-package com.kotwicka.heroes.presenter;
+package com.kotwicka.heroes.detail.presenter;
 
-import android.util.Log;
-
-import com.kotwicka.heroes.contract.HeroDetailContract;
+import com.kotwicka.heroes.detail.contract.HeroDetailContract;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.persistence.entity.Hero;
 
@@ -13,8 +11,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class HeroDetailPresenter implements HeroDetailContract.Presenter {
-
-    private static final String TAG = HeroDetailPresenter.class.getSimpleName();
 
     private final HeroDetailContract.Model model;
     private final HeroDetailContract.View view;
@@ -27,17 +23,14 @@ public class HeroDetailPresenter implements HeroDetailContract.Presenter {
 
     @Override
     public void checkFavouriteStatus(final HeroViewModel heroViewModel) {
-        Log.d(TAG, "Checking initial favourite status...");
         setFavouriteHeroData(heroViewModel);
     }
 
     @Override
     public void changeFavouriteStatus(final HeroViewModel heroViewModel) {
         if (hero == null) {
-            Log.d(TAG, "Hero not in fav, adding it");
             addToFavourites(heroViewModel);
         } else {
-            Log.d(TAG, "Hero in fav, removing it");
             removeFromFavourites();
         }
         setFavouriteHeroData(heroViewModel);

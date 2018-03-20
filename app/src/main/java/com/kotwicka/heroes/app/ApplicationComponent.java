@@ -1,12 +1,11 @@
 package com.kotwicka.heroes.app;
 
-import com.kotwicka.heroes.HeroesComponent;
-import com.kotwicka.heroes.HeroesDetailComponent;
-import com.kotwicka.heroes.HeroesDetailModule;
-import com.kotwicka.heroes.HeroesModule;
+import com.kotwicka.heroes.list.component.HeroesComponent;
+import com.kotwicka.heroes.detail.component.HeroesDetailComponent;
+import com.kotwicka.heroes.detail.module.HeroesDetailModule;
+import com.kotwicka.heroes.list.module.HeroesModule;
 import com.kotwicka.heroes.net.module.MarvelServiceModule;
 import com.kotwicka.heroes.persistence.PersistenceModule;
-import com.kotwicka.heroes.view.MainActivity;
 
 import javax.inject.Singleton;
 

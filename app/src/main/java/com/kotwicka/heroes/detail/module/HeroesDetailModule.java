@@ -1,9 +1,9 @@
-package com.kotwicka.heroes;
+package com.kotwicka.heroes.detail.module;
 
-import com.kotwicka.heroes.contract.HeroDetailContract;
+import com.kotwicka.heroes.detail.contract.HeroDetailContract;
 import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.model.HeroModel;
-import com.kotwicka.heroes.presenter.HeroDetailPresenter;
+import com.kotwicka.heroes.detail.presenter.HeroDetailPresenter;
 import com.kotwicka.heroes.repository.HeroesRepository;
 
 import dagger.Module;

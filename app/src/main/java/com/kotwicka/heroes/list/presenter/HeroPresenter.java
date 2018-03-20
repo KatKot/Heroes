@@ -1,8 +1,8 @@
-package com.kotwicka.heroes.presenter;
+package com.kotwicka.heroes.list.presenter;
 
 import android.util.Log;
 
-import com.kotwicka.heroes.contract.HeroesContract;
+import com.kotwicka.heroes.list.contract.HeroesContract;
 import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.model.HeroViewModel;
 
@@ -41,7 +41,7 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Error " + e.getMessage(), e);
+                        Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
                     }
 
                     @Override
@@ -76,7 +76,7 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Error " + e.getMessage(), e);
+                        Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
                     }
 
                     @Override

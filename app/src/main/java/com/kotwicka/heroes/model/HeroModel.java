@@ -1,9 +1,7 @@
 package com.kotwicka.heroes.model;
 
-import android.util.Log;
-
-import com.kotwicka.heroes.contract.HeroesContract;
-import com.kotwicka.heroes.contract.HeroDetailContract;
+import com.kotwicka.heroes.list.contract.HeroesContract;
+import com.kotwicka.heroes.detail.contract.HeroDetailContract;
 import com.kotwicka.heroes.net.model.Data;
 import com.kotwicka.heroes.net.model.Result;
 import com.kotwicka.heroes.persistence.entity.Hero;
@@ -15,8 +13,6 @@ import rx.Single;
 import rx.functions.Func1;
 
 public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model {
-
-    private static final String TAG = HeroModel.class.getName();
 
     private final HeroesRepository repository;
     private final HeroApiModel heroApiModel;

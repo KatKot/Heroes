@@ -2,12 +2,12 @@ package com.kotwicka.heroes.app;
 
 import android.app.Application;
 
-import com.kotwicka.heroes.HeroesComponent;
-import com.kotwicka.heroes.contract.HeroesContract;
-import com.kotwicka.heroes.HeroesDetailComponent;
-import com.kotwicka.heroes.HeroesDetailModule;
-import com.kotwicka.heroes.HeroesModule;
-import com.kotwicka.heroes.contract.HeroDetailContract;
+import com.kotwicka.heroes.list.component.HeroesComponent;
+import com.kotwicka.heroes.list.contract.HeroesContract;
+import com.kotwicka.heroes.detail.component.HeroesDetailComponent;
+import com.kotwicka.heroes.detail.module.HeroesDetailModule;
+import com.kotwicka.heroes.list.module.HeroesModule;
+import com.kotwicka.heroes.detail.contract.HeroDetailContract;
 
 public class HeroesApp extends Application {
 

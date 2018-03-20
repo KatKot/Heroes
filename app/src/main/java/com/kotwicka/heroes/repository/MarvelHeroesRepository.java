@@ -23,8 +23,6 @@ import rx.functions.Func2;
 
 public class MarvelHeroesRepository implements HeroesRepository {
 
-    private static final String TAG = MarvelHeroesRepository.class.getName();
-
     private final MarvelService marvelService;
     private final HeroDatabase heroDatabase;
 
@@ -35,13 +33,11 @@ public class MarvelHeroesRepository implements HeroesRepository {
 
     @Override
     public Observable<Data> getHeroes(final int limit, final int offset) {
-        Log.d(TAG, "Getting heroes from net...");
         return mapHeroes(marvelService.getHeroes(limit, offset));
     }
 
     @Override
     public Observable<Data> getHeroesWithName(final String name, final int limit, final int offset) {
-        Log.d(TAG, "Getting heroes for name : " + name + " ...");
         return mapHeroes(marvelService.getHeroesWithNameStartingWith(name, limit, offset));
     }
 

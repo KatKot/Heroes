@@ -2,7 +2,6 @@ package com.kotwicka.heroes.model;
 
 import com.kotwicka.heroes.persistence.entity.Hero;
 
-import java.util.Collection;
 import java.util.List;
 
 public class FavouriteHeroes {

@@ -1,4 +1,4 @@
-package com.kotwicka.heroes.contract;
+package com.kotwicka.heroes.detail.contract;
 
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.persistence.entity.Hero;

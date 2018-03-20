@@ -1,4 +1,4 @@
-package com.kotwicka.heroes.view;
+package com.kotwicka.heroes.list.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,12 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kotwicka.heroes.R;
-import com.kotwicka.heroes.adapter.HeroesAdapter;
-import com.kotwicka.heroes.adapter.HeroesOnScrollListener;
+import com.kotwicka.heroes.list.adapter.HeroesAdapter;
+import com.kotwicka.heroes.list.adapter.HeroesOnScrollListener;
 import com.kotwicka.heroes.app.HeroesApp;
-import com.kotwicka.heroes.contract.HeroesContract;
+import com.kotwicka.heroes.list.contract.HeroesContract;
 import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.model.HeroViewModel;
+import com.kotwicka.heroes.detail.view.HeroDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;

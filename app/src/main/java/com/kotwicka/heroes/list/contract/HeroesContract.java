@@ -1,4 +1,4 @@
-package com.kotwicka.heroes.contract;
+package com.kotwicka.heroes.list.contract;
 
 import com.kotwicka.heroes.model.HeroViewModel;
 

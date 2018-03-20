@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.kotwicka.heroes.view.HeroDetailActivity"
+        tools:context="com.kotwicka.heroes.detail.view.HeroDetailActivity"
         tools:showIn="@layout/activity_hero_detail">
 
         <ImageView

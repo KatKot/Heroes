@@ -1,18 +1,17 @@
-package com.kotwicka.heroes.view;
+package com.kotwicka.heroes.detail.view;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kotwicka.heroes.R;
 import com.kotwicka.heroes.app.HeroesApp;
-import com.kotwicka.heroes.contract.HeroDetailContract;
+import com.kotwicka.heroes.detail.contract.HeroDetailContract;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.utils.HeroPictureUtil;
 
@@ -22,8 +21,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class HeroDetailActivity extends AppCompatActivity implements HeroDetailContract.View {
-
-    private static final String TAG = HeroDetailActivity.class.getSimpleName();
 
     @BindView(R.id.hero_detail_image)
     ImageView photo;
@@ -62,7 +59,6 @@ public class HeroDetailActivity extends AppCompatActivity implements HeroDetailC
     }
 
     private void setFabView() {
-        Log.d(TAG, "Setting initial fab view...");
         heroDetailPresenter.checkFavouriteStatus(hero);
     }
 
@@ -91,16 +87,12 @@ public class HeroDetailActivity extends AppCompatActivity implements HeroDetailC
 
     @Override
     public void setFavouriteButton() {
-        Log.d(TAG, "Setting icon as full...");
         fab.setImageResource(R.drawable.ic_favourite);
-        Log.d(TAG, "Icon full set!");
     }
 
     @Override
     public void setNotFavouriteButton() {
-        Log.d(TAG, "Setting icon as only border....");
         fab.setImageResource(R.drawable.ic_favorite_border);
-        Log.d(TAG, "Icon only border set!");
     }
 
     public void changeHeroFavouriteStatus(View view) {

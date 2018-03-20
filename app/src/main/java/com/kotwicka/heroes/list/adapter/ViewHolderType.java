@@ -1,4 +1,4 @@
-package com.kotwicka.heroes.adapter;
+package com.kotwicka.heroes.list.adapter;
 
 public enum ViewHolderType {
 

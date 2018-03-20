@@ -42,6 +42,8 @@ public class HeroPresenter implements HeroesContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
+                        heroView.onErrorFetchingData();
+
                     }
 
                     @Override
@@ -77,6 +79,8 @@ public class HeroPresenter implements HeroesContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
+                        heroView.onErrorFetchingData();
+                        heroView.hideProgressItem();
                     }
 
                     @Override

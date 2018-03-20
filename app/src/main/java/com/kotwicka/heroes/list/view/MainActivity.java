@@ -3,6 +3,7 @@ package com.kotwicka.heroes.list.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -200,6 +201,12 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
             this.recyclerView.getLayoutManager().scrollToPosition(scrollPosition);
             this.scrollPosition = 0;
         }
+    }
+
+    @Override
+    public void onErrorFetchingData() {
+        afterLoadingAllHeroes();
+        Snackbar.make(recyclerView, "Check your internet connection", Snackbar.LENGTH_LONG).show();
     }
 
     @Override

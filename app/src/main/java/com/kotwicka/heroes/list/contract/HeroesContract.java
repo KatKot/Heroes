@@ -10,6 +10,7 @@ public interface HeroesContract {
     interface View {
         void updateData(HeroViewModel heroViewModel);
         void afterLoadingAllHeroes();
+        void onErrorFetchingData();
         void hideProgressItem();
         void showProgressItem();
     }

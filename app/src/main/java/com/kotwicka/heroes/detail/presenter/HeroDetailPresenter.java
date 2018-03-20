@@ -49,7 +49,6 @@ public class HeroDetailPresenter implements HeroDetailContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         view.displayErrorMessage();
-
                     }
 
                     @Override

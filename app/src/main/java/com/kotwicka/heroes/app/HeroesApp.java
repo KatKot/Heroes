@@ -3,7 +3,7 @@ package com.kotwicka.heroes.app;
 import android.app.Application;
 
 import com.kotwicka.heroes.HeroesComponent;
-import com.kotwicka.heroes.HeroesContract;
+import com.kotwicka.heroes.contract.HeroesContract;
 import com.kotwicka.heroes.HeroesDetailComponent;
 import com.kotwicka.heroes.HeroesDetailModule;
 import com.kotwicka.heroes.HeroesModule;

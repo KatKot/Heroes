@@ -2,9 +2,9 @@ package com.kotwicka.heroes.presenter;
 
 import android.util.Log;
 
-import com.kotwicka.heroes.HeroesContract;
+import com.kotwicka.heroes.contract.HeroesContract;
+import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.model.HeroViewModel;
-import com.kotwicka.heroes.utils.HeroApiParameters;
 
 import rx.Observable;
 import rx.Observer;
@@ -18,12 +18,13 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
     private final HeroesContract.Model heroModel;
     private final HeroesContract.View heroView;
-
+    private final HeroApiModel heroApiModel;
     private Subscription subscription = null;
 
-    public HeroPresenter(final HeroesContract.Model model, final HeroesContract.View view) {
+    public HeroPresenter(final HeroesContract.Model model, final HeroesContract.View view, final HeroApiModel heroApiModel) {
         this.heroModel = model;
         this.heroView = view;
+        this.heroApiModel = heroApiModel;
     }
 
     @Override
@@ -34,23 +35,32 @@ public class HeroPresenter implements HeroesContract.Presenter {
                 .subscribe(new Observer<HeroViewModel>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "Completed!");
-                        heroView.hideProgressBar();
-                        heroView.showProgressItem();
+                        heroView.afterLoadingAllHeroes();
+                        showProgressItem();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "Error " + e.getMessage());
+                        Log.e(TAG, "Error " + e.getMessage(), e);
                     }
 
                     @Override
                     public void onNext(HeroViewModel heroViewModel) {
-                        HeroApiParameters.TOTAL = heroViewModel.getTotal();
                         heroView.updateData(heroViewModel);
-                        Log.d(TAG, "Updating data with new model...");
                     }
                 });
+    }
+
+    private void showProgressItem() {
+        if (!heroApiModel.isLastPage()) {
+            heroView.showProgressItem();
+        }
+    }
+
+    @Override
+    public void loadFavouriteHeroes() {
+        heroApiModel.setShouldGetFavourites(true);
+        loadHeroData();
     }
 
     @Override
@@ -61,31 +71,31 @@ public class HeroPresenter implements HeroesContract.Presenter {
                 .subscribe(new Observer<HeroViewModel>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "Completed!");
-                        heroView.showProgressItem();
+                        showProgressItem();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "Error " + e.getMessage());
+                        Log.e(TAG, "Error " + e.getMessage(), e);
                     }
 
                     @Override
                     public void onNext(HeroViewModel heroViewModel) {
                         heroView.hideProgressItem();
                         heroView.updateData(heroViewModel);
-                        Log.d(TAG, "Updating data with new model...");
                     }
                 });
     }
 
     private Observable<HeroViewModel> getHeroes() {
-        if (HeroApiParameters.GET_FAVOURITES) {
-            return heroModel.favouriteHeroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
-        } else if (HeroApiParameters.NAME.isEmpty()) {
-            return heroModel.heroes(HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
+        final int limit = heroApiModel.getLimit();
+        final int offset = heroApiModel.getOffset();
+        if (heroApiModel.shouldGetFavourites()) {
+            return heroModel.favouriteHeroes(limit, offset);
+        } else if (heroApiModel.getName().isEmpty()) {
+            return heroModel.heroes(limit, offset);
         } else {
-            return heroModel.heroesWithName(HeroApiParameters.NAME, HeroApiParameters.LIMIT, HeroApiParameters.OFFSET);
+            return heroModel.heroesWithName(heroApiModel.getName(), limit, offset);
         }
     }
 
@@ -94,5 +104,26 @@ public class HeroPresenter implements HeroesContract.Presenter {
         if (this.subscription != null && !this.subscription.isUnsubscribed()) {
             this.subscription.unsubscribe();
         }
+    }
+
+    @Override
+    public void loadHeroData(final String name) {
+        heroApiModel.setName(name);
+        loadHeroData();
+    }
+
+    @Override
+    public void resetApiModel() {
+        heroApiModel.resetParameters();
+    }
+
+    @Override
+    public void resetApiOffset() {
+        heroApiModel.resetOffset();
+    }
+
+    @Override
+    public boolean isShowingFavourites() {
+        return heroApiModel.shouldGetFavourites();
     }
 }

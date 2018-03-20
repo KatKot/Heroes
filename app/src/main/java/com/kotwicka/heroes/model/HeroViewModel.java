@@ -14,34 +14,29 @@ public class HeroViewModel implements Parcelable {
     private final String name;
     private final String description;
     private final String photoPath;
-    private final int total;
 
     public HeroViewModel() {
         this.name = null;
         this.description = null;
         this.photoPath = null;
-        this.total = 0;
     }
 
-    public HeroViewModel(final Result result, final String total) {
+    public HeroViewModel(final Result result) {
         this.name = result.getName();
         this.description = result.getDescription();
         this.photoPath = result.getThumbnail().getPath() + PHOTO_EXTENSION_PREFIX + result.getThumbnail().getExtension();
-        this.total = Integer.valueOf(total);
     }
 
-    public HeroViewModel(final Hero hero, final int total) {
+    public HeroViewModel(final Hero hero) {
         this.name = hero.getName();
         this.description = hero.getDescription();
         this.photoPath = hero.getPhotoPath();
-        this.total = total;
     }
 
     protected HeroViewModel(Parcel in) {
         name = in.readString();
         description = in.readString();
         photoPath = in.readString();
-        total = in.readInt();
     }
 
     @Override
@@ -49,7 +44,6 @@ public class HeroViewModel implements Parcelable {
         dest.writeString(name);
         dest.writeString(description);
         dest.writeString(photoPath);
-        dest.writeInt(total);
     }
 
     @Override
@@ -74,7 +68,7 @@ public class HeroViewModel implements Parcelable {
     }
 
     public String getDescription() {
-        if(description == null || description.isEmpty()) {
+        if (description == null || description.isEmpty()) {
             return NO_DESCRIPTION;
         }
         return description;
@@ -82,9 +76,5 @@ public class HeroViewModel implements Parcelable {
 
     public String getPhotoPath() {
         return photoPath;
-    }
-
-    public int getTotal() {
-        return total;
     }
 }

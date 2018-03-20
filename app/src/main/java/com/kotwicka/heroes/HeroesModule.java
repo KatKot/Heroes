@@ -1,5 +1,7 @@
 package com.kotwicka.heroes;
 
+import com.kotwicka.heroes.contract.HeroesContract;
+import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.model.HeroModel;
 import com.kotwicka.heroes.presenter.HeroPresenter;
 import com.kotwicka.heroes.repository.HeroesRepository;
@@ -17,12 +19,12 @@ public class HeroesModule {
     }
 
     @Provides
-    public HeroesContract.Model providesHeroModel(final HeroesRepository heroesRepository) {
-        return new HeroModel(heroesRepository);
+    public HeroesContract.Model providesHeroModel(final HeroesRepository heroesRepository, final HeroApiModel heroApiModel) {
+        return new HeroModel(heroesRepository, heroApiModel);
     }
 
     @Provides
-    public HeroesContract.Presenter providesHeroPresenter(final HeroesContract.Model heroModel) {
-        return new HeroPresenter(heroModel, heroView);
+    public HeroesContract.Presenter providesHeroPresenter(final HeroesContract.Model heroModel, final HeroApiModel heroApiModel) {
+        return new HeroPresenter(heroModel, heroView, heroApiModel);
     }
 }

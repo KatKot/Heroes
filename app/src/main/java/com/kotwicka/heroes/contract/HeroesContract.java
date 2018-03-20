@@ -1,4 +1,4 @@
-package com.kotwicka.heroes;
+package com.kotwicka.heroes.contract;
 
 import com.kotwicka.heroes.model.HeroViewModel;
 
@@ -9,15 +9,20 @@ public interface HeroesContract {
 
     interface View {
         void updateData(HeroViewModel heroViewModel);
-        void hideProgressBar();
+        void afterLoadingAllHeroes();
         void hideProgressItem();
         void showProgressItem();
     }
 
     interface Presenter {
         void loadHeroData();
+        void loadFavouriteHeroes();
         void loadNextPageOfHeroData();
         void unsubscribeHeroData();
+        void loadHeroData(String name);
+        void resetApiModel();
+        void resetApiOffset();
+        boolean isShowingFavourites();
     }
 
     interface Model {

@@ -2,7 +2,6 @@ package com.kotwicka.heroes.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.kotwicka.heroes.R;
 import com.kotwicka.heroes.model.HeroViewModel;
-import com.kotwicka.heroes.utils.HeroApiParameters;
 import com.kotwicka.heroes.utils.HeroPictureUtil;
 
 import java.util.List;
@@ -24,8 +22,6 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface OnHeroClickListener {
         void onHeroClick(HeroViewModel hero);
     }
-
-    private static final String TAG = HeroesAdapter.class.getSimpleName();
 
     private final List<HeroViewModel> heroes;
     private final Context context;
@@ -52,7 +48,6 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "Binding element at position : " + position);
         if (getItemViewType(position) == ViewHolderType.HERO.getType()) {
             final HeroViewHolder heroViewHolder = (HeroViewHolder) holder;
             heroViewHolder.bind(context, listener, heroes.get(position));
@@ -88,7 +83,6 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void clearData() {
         this.heroes.clear();
         notifyDataSetChanged();
-        HeroApiParameters.resetParameters();
     }
 
     @Override
@@ -108,7 +102,7 @@ public class HeroesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final Context context,  final OnHeroClickListener listener, final HeroViewModel heroViewModel) {
+        public void bind(final Context context, final OnHeroClickListener listener, final HeroViewModel heroViewModel) {
             heroName.setText(heroViewModel.getName());
             HeroPictureUtil.loadPicture(context, heroImage, heroViewModel.getPhotoPath());
             itemView.setOnClickListener(new View.OnClickListener() {

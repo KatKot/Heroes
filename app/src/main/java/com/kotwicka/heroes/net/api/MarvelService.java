@@ -3,9 +3,9 @@ package com.kotwicka.heroes.net.api;
 import com.kotwicka.heroes.net.model.Heroes;
 
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import rx.Observable;
 
 public interface MarvelService {
 

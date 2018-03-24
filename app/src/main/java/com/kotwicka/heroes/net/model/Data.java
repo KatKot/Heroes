@@ -1,9 +1,10 @@
 
 package com.kotwicka.heroes.net.model;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Data {
 
@@ -57,6 +58,10 @@ public class Data {
 
     public List<Result> getResults() {
         return results;
+    }
+
+    public Result[] getResultsArray() {
+        return results.toArray(new Result[results.size()]);
     }
 
     public void setResults(List<Result> results) {

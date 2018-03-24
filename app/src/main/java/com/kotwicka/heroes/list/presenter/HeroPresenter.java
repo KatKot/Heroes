@@ -6,11 +6,11 @@ import com.kotwicka.heroes.list.contract.HeroesContract;
 import com.kotwicka.heroes.model.HeroApiModel;
 import com.kotwicka.heroes.model.HeroViewModel;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class HeroPresenter implements HeroesContract.Presenter {
 
@@ -19,7 +19,8 @@ public class HeroPresenter implements HeroesContract.Presenter {
     private final HeroesContract.Model heroModel;
     private final HeroesContract.View heroView;
     private final HeroApiModel heroApiModel;
-    private Subscription subscription = null;
+
+    private Disposable disposable;
 
     public HeroPresenter(final HeroesContract.Model model, final HeroesContract.View view, final HeroApiModel heroApiModel) {
         this.heroModel = model;
@@ -29,21 +30,26 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
     @Override
     public void loadHeroData() {
-        subscription = getHeroes()
+            getHeroes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HeroViewModel>() {
-                    @Override
-                    public void onCompleted() {
-                        heroView.afterLoadingAllHeroes();
-                        showProgressItem();
-                    }
-
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
                         heroView.onErrorFetchingData();
 
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        heroView.afterLoadingAllHeroes();
+                        showProgressItem();
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable = d;
                     }
 
                     @Override
@@ -67,20 +73,25 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
     @Override
     public void loadNextPageOfHeroData() {
-        subscription = getHeroes()
+        getHeroes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HeroViewModel>() {
-                    @Override
-                    public void onCompleted() {
-                        showProgressItem();
-                    }
-
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
                         heroView.onErrorFetchingData();
                         heroView.hideProgressItem();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        showProgressItem();
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable = d;
                     }
 
                     @Override
@@ -105,8 +116,8 @@ public class HeroPresenter implements HeroesContract.Presenter {
 
     @Override
     public void unsubscribeHeroData() {
-        if (this.subscription != null && !this.subscription.isUnsubscribed()) {
-            this.subscription.unsubscribe();
+        if (this.disposable != null && !this.disposable.isDisposed()) {
+            this.disposable.dispose();
         }
     }
 

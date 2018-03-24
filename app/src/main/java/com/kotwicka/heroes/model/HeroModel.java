@@ -1,16 +1,18 @@
 package com.kotwicka.heroes.model;
 
-import com.kotwicka.heroes.list.contract.HeroesContract;
+import com.google.common.base.Optional;
 import com.kotwicka.heroes.detail.contract.HeroDetailContract;
+import com.kotwicka.heroes.list.contract.HeroesContract;
 import com.kotwicka.heroes.net.model.Data;
 import com.kotwicka.heroes.net.model.Result;
 import com.kotwicka.heroes.persistence.entity.Hero;
 import com.kotwicka.heroes.repository.HeroesRepository;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
-import rx.functions.Func1;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
 public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model {
 
@@ -24,29 +26,22 @@ public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model
 
     @Override
     public Observable<HeroViewModel> heroes(final int limit, final int offset) {
-        return repository.getHeroes(limit, offset).concatMap(new Func1<Data, Observable<? extends HeroViewModel>>() {
-            @Override
-            public Observable<? extends HeroViewModel> call(final Data data) {
-                heroApiModel.setTotal(Integer.valueOf(data.getTotal()));
-                return Observable.from(data.getResults()).map(new Func1<Result, HeroViewModel>() {
-                    @Override
-                    public HeroViewModel call(Result result) {
-                        return new HeroViewModel(result);
-                    }
-                });
-            }
-        });
+        return getHeroes(repository.getHeroes(limit, offset));
     }
 
     @Override
     public Observable<HeroViewModel> heroesWithName(final String name, final int limit, final int offset) {
-        return repository.getHeroesWithName(name, limit, offset).concatMap(new Func1<Data, Observable<? extends HeroViewModel>>() {
+        return getHeroes(repository.getHeroesWithName(name, limit, offset));
+    }
+
+    private Observable<HeroViewModel> getHeroes(final Observable<Data> data) {
+        return data.concatMap(new Function<Data, ObservableSource<? extends HeroViewModel>>() {
             @Override
-            public Observable<? extends HeroViewModel> call(final Data data) {
+            public ObservableSource<? extends HeroViewModel> apply(Data data) throws Exception {
                 heroApiModel.setTotal(Integer.valueOf(data.getTotal()));
-                return Observable.from(data.getResults()).map(new Func1<Result, HeroViewModel>() {
+                return Observable.fromArray(data.getResultsArray()).map(new Function<Result, HeroViewModel>() {
                     @Override
-                    public HeroViewModel call(Result result) {
+                    public HeroViewModel apply(Result result) throws Exception {
                         return new HeroViewModel(result);
                     }
                 });
@@ -54,15 +49,16 @@ public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model
         });
     }
 
+
     @Override
     public Observable<HeroViewModel> favouriteHeroes(final int limit, final int offset) {
-        return repository.getFavouriteHeroes(limit, offset).concatMap(new Func1<FavouriteHeroes, Observable<? extends HeroViewModel>>() {
+        return repository.getFavouriteHeroes(limit, offset).concatMap(new Function<FavouriteHeroes, ObservableSource<? extends HeroViewModel>>() {
             @Override
-            public Observable<? extends HeroViewModel> call(final FavouriteHeroes favouriteHeroes) {
+            public ObservableSource<? extends HeroViewModel> apply(final FavouriteHeroes favouriteHeroes) {
                 heroApiModel.setTotal(Integer.valueOf(favouriteHeroes.getTotalSize()));
-                return Observable.from(favouriteHeroes.getFavouriteHeroesPage()).map(new Func1<Hero, HeroViewModel>() {
+                return Observable.fromArray(favouriteHeroes.getFavouriteHeroesPage()).map(new Function<Hero, HeroViewModel>() {
                     @Override
-                    public HeroViewModel call(Hero hero) {
+                    public HeroViewModel apply(Hero hero) {
                         return new HeroViewModel(hero);
                     }
                 });
@@ -81,7 +77,7 @@ public class HeroModel implements HeroesContract.Model, HeroDetailContract.Model
     }
 
     @Override
-    public Single<Hero> getFavourite(final HeroViewModel heroViewModel) {
+    public Single<Optional<Hero>> getFavourite(final HeroViewModel heroViewModel) {
         return repository.getFavourite(heroViewModel);
     }
 }

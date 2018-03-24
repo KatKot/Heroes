@@ -1,7 +1,6 @@
 package com.kotwicka.heroes.repository;
 
-import android.util.Log;
-
+import com.google.common.base.Optional;
 import com.kotwicka.heroes.model.FavouriteHeroes;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.net.api.MarvelService;
@@ -13,13 +12,12 @@ import com.kotwicka.heroes.persistence.entity.Hero;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import butterknife.OnCheckedChanged;
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
-import rx.functions.Action0;
-import rx.functions.Func1;
-import rx.functions.Func2;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
 
 public class MarvelHeroesRepository implements HeroesRepository {
 
@@ -43,7 +41,7 @@ public class MarvelHeroesRepository implements HeroesRepository {
 
     @Override
     public Observable<FavouriteHeroes> getFavouriteHeroes(final int limit, final int offset) {
-       final Observable<List<Hero>> favourites = Observable.fromCallable(new Callable<List<Hero>>() {
+        final Observable<List<Hero>> favourites = Observable.fromCallable(new Callable<List<Hero>>() {
             @Override
             public List<Hero> call() throws Exception {
                 return heroDatabase.heroDao().getHeroes(limit, offset);
@@ -55,20 +53,21 @@ public class MarvelHeroesRepository implements HeroesRepository {
                 return heroDatabase.heroDao().getHeroesSize();
             }
         });
-        return Observable.zip(favourites, favouriteSize, new Func2<List<Hero>, Integer, FavouriteHeroes>() {
+        return Observable.zip(favourites, favouriteSize, new BiFunction<List<Hero>, Integer, FavouriteHeroes>() {
             @Override
-            public FavouriteHeroes call(List<Hero> heroes, Integer totalSize) {
-                return new FavouriteHeroes(heroes, totalSize);
+            public FavouriteHeroes apply(List<Hero> heroes, Integer integer) throws Exception {
+                return new FavouriteHeroes(heroes, integer);
             }
         });
     }
 
+
     @Override
-    public Single<Hero> getFavourite(final HeroViewModel hero) {
-        return Single.fromCallable(new Callable<Hero>() {
+    public Single<Optional<Hero>> getFavourite(final HeroViewModel hero) {
+        return Single.fromCallable(new Callable<Optional<Hero>>() {
             @Override
-            public Hero call() throws Exception {
-                return heroDatabase.heroDao().getForName(hero.getName());
+            public Optional<Hero> call() throws Exception {
+                return Optional.fromNullable(heroDatabase.heroDao().getForName(hero.getName()));
             }
         });
     }
@@ -80,9 +79,9 @@ public class MarvelHeroesRepository implements HeroesRepository {
         favouriteHero.setDescription(hero.getDescription());
         favouriteHero.setPhotoPath(hero.getPhotoPath());
 
-        return Completable.fromAction(new Action0() {
+        return Completable.fromAction(new Action() {
             @Override
-            public void call() {
+            public void run() throws Exception {
                 heroDatabase.heroDao().insert(favouriteHero);
             }
         });
@@ -90,18 +89,18 @@ public class MarvelHeroesRepository implements HeroesRepository {
 
     @Override
     public Completable removeHeroFromFavourites(final Hero favouriteHero) {
-        return Completable.fromAction(new Action0() {
+        return Completable.fromAction(new Action() {
             @Override
-            public void call() {
+            public void run() {
                 heroDatabase.heroDao().delete(favouriteHero);
             }
         });
     }
 
     private Observable<Data> mapHeroes(final Observable<Heroes> heroes) {
-        return heroes.map(new Func1<Heroes, Data>() {
+        return heroes.map(new Function<Heroes, Data>() {
             @Override
-            public Data call(Heroes heroes) {
+            public Data apply(Heroes heroes) throws Exception {
                 return heroes.getData();
             }
         });

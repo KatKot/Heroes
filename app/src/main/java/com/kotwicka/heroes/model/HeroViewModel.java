@@ -33,6 +33,12 @@ public class HeroViewModel implements Parcelable {
         this.photoPath = hero.getPhotoPath();
     }
 
+    public HeroViewModel(final String name, final String description, final String photoPath) {
+        this.name = name;
+        this.description = description;
+        this.photoPath = photoPath;
+    }
+
     protected HeroViewModel(Parcel in) {
         name = in.readString();
         description = in.readString();

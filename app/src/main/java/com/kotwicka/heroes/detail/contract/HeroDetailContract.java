@@ -1,11 +1,11 @@
 package com.kotwicka.heroes.detail.contract;
 
+import com.google.common.base.Optional;
 import com.kotwicka.heroes.model.HeroViewModel;
 import com.kotwicka.heroes.persistence.entity.Hero;
 
-import rx.Completable;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 public interface HeroDetailContract {
 
@@ -25,6 +25,6 @@ public interface HeroDetailContract {
     interface Model {
         Completable addToFavourites(HeroViewModel heroViewModel);
         Completable removeFromFavourites(Hero hero);
-        Single<Hero> getFavourite(HeroViewModel heroViewModel);
+        Single<Optional<Hero>> getFavourite(HeroViewModel heroViewModel);
     }
 }

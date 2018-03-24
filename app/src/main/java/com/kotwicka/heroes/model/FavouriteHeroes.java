@@ -14,8 +14,8 @@ public class FavouriteHeroes {
         this.totalSize = totalSize;
     }
 
-    public List<Hero> getFavouriteHeroesPage() {
-        return favouriteHeroesPage;
+    public Hero[] getFavouriteHeroesPage() {
+        return favouriteHeroesPage.toArray(new Hero[favouriteHeroesPage.size()]);
     }
 
     public int getTotalSize() {

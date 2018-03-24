@@ -24,7 +24,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
@@ -44,8 +44,8 @@ public class MarvelServiceModule {
 
     @Provides
     @Singleton
-    public RxJavaCallAdapterFactory providesCallAdapterFactory() {
-        return RxJavaCallAdapterFactory.create();
+    public RxJava2CallAdapterFactory providesCallAdapterFactory() {
+        return RxJava2CallAdapterFactory.create();
     }
 
     @Provides
@@ -81,7 +81,7 @@ public class MarvelServiceModule {
     @Provides
     public Retrofit providesRetrofit(
             final GsonConverterFactory gsonConverterFactory,
-            final RxJavaCallAdapterFactory rxJavaCallAdapterFactory,
+            final RxJava2CallAdapterFactory rxJavaCallAdapterFactory,
             final OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(MARVEL_SERVICE_BASE_URL)

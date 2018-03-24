@@ -2,8 +2,7 @@ package com.kotwicka.heroes.list.contract;
 
 import com.kotwicka.heroes.model.HeroViewModel;
 
-import rx.Observable;
-
+import io.reactivex.Observable;
 
 public interface HeroesContract {
 

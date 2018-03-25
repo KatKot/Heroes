@@ -14,8 +14,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class HeroPresenter implements HeroesContract.Presenter {
 
-    private static final String TAG = HeroPresenter.class.getName();
-
     private final HeroesContract.Model heroModel;
     private final HeroesContract.View heroView;
     private final HeroApiModel heroApiModel;
@@ -29,14 +27,29 @@ public class HeroPresenter implements HeroesContract.Presenter {
     }
 
     @Override
-    public void loadHeroData() {
-            getHeroes()
+    public void loadHeroes() {
+        loadHeroData();
+    }
+
+    @Override
+    public void loadFavouriteHeroes() {
+        heroApiModel.setShouldGetFavourites(true);
+        loadHeroData();
+    }
+
+    @Override
+    public void loadHeroesForName(final String name) {
+        heroApiModel.setName(name);
+        loadHeroData();
+    }
+
+    private void loadHeroData() {
+        getHeroes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<HeroViewModel>() {
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
                         heroView.onErrorFetchingData();
 
                     }
@@ -65,11 +78,6 @@ public class HeroPresenter implements HeroesContract.Presenter {
         }
     }
 
-    @Override
-    public void loadFavouriteHeroes() {
-        heroApiModel.setShouldGetFavourites(true);
-        loadHeroData();
-    }
 
     @Override
     public void loadNextPageOfHeroData() {
@@ -79,7 +87,6 @@ public class HeroPresenter implements HeroesContract.Presenter {
                 .subscribe(new Observer<HeroViewModel>() {
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Error loading heroes " + e.getMessage(), e);
                         heroView.onErrorFetchingData();
                         heroView.hideProgressItem();
                     }
@@ -107,11 +114,12 @@ public class HeroPresenter implements HeroesContract.Presenter {
         final int offset = heroApiModel.getOffset();
         if (heroApiModel.shouldGetFavourites()) {
             return heroModel.favouriteHeroes(limit, offset);
-        } else if (heroApiModel.getName().isEmpty()) {
-            return heroModel.heroes(limit, offset);
-        } else {
-            return heroModel.heroesWithName(heroApiModel.getName(), limit, offset);
         }
+        if (heroApiModel.getName().isEmpty()) {
+            return heroModel.heroes(limit, offset);
+        }
+        return heroModel.heroesWithName(heroApiModel.getName(), limit, offset);
+
     }
 
     @Override
@@ -121,11 +129,6 @@ public class HeroPresenter implements HeroesContract.Presenter {
         }
     }
 
-    @Override
-    public void loadHeroData(final String name) {
-        heroApiModel.setName(name);
-        loadHeroData();
-    }
 
     @Override
     public void resetApiModel() {

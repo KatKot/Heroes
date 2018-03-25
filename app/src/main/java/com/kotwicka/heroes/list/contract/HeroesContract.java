@@ -15,11 +15,11 @@ public interface HeroesContract {
     }
 
     interface Presenter {
-        void loadHeroData();
+        void loadHeroes();
         void loadFavouriteHeroes();
         void loadNextPageOfHeroData();
         void unsubscribeHeroData();
-        void loadHeroData(String name);
+        void loadHeroesForName(String name);
         void resetApiModel();
         void resetApiOffset();
         boolean isShowingFavourites();

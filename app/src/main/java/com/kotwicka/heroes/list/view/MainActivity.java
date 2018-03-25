@@ -6,8 +6,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     prepareViewForNewSearch();
                     hideSearchBarAndShowFloatingButton();
-                    heroesPresenter.loadHeroData(v.getText().toString());
+                    heroesPresenter.loadHeroesForName(v.getText().toString());
                     return true;
                 }
                 return false;
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements HeroesContract.Vi
 
     private void loadHeroes() {
         prepareViewForNewSearch();
-        this.heroesPresenter.loadHeroData();
+        this.heroesPresenter.loadHeroes();
     }
 
     @Override

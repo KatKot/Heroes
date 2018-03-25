@@ -9,9 +9,7 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.net.ConnectException;
@@ -22,7 +20,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -118,7 +115,8 @@ public class HeroPresenterTest {
         heroApiModel.setTotal(60);
 
         // when
-        when(model.heroes(heroApiModel.getLimit(), heroApiModel.getOffset())).thenReturn(heroes);;
+        when(model.heroes(heroApiModel.getLimit(), heroApiModel.getOffset())).thenReturn(heroes);
+
         heroPresenter.loadHeroes();
 
         // then
